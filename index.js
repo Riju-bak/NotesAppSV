@@ -25,12 +25,17 @@ let notes = [
         content: "GET and POST are the most important methods of HTTP protocol",
         date: "2022-05-30T19:20:14.298Z",
         important: true
+    },
+    {
+        id: 4,
+        content: "React useEffect runs the side-effect code using handler after every render.",
+        date: "2022-05-30T19:20:14.298Z",
+        important: false
     }
 ]
 
 const generateID = () => {
-    const id = notes.length > 0 ? Math.max(...notes.map(note => note.id)) + 1  : 0;
-    return id;
+    return notes.length > 0 ? Math.max(...notes.map(note => note.id)) + 1 : 0;
 };
 
 app.get('/', (req, res) => {

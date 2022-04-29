@@ -6,6 +6,7 @@ app.use(express.json()); //Without this req.body for POST will be undefined.
 const cors = require('cors')
 
 app.use(cors())
+app.use(express.static('build'))
 
 let notes = [
     {

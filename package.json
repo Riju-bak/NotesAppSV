@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build:ui": "rm -rf build/ && cd /home/rijubak/test_ground/full_stack_open2022_prac/part2_a && rm -rf build/ && npm run build && cp -r /home/rijubak/test_ground/full_stack_open2022_prac/noteserver/",
+    "build:ui": "rm -rf build/ && cd /home/rijubak/test_ground/full_stack_open2022_prac/part2_a && rm -rf build/ && npm run build && cp -r build/ /home/rijubak/test_ground/full_stack_open2022_prac/noteserver/",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail"

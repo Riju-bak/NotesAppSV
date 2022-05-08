@@ -4,6 +4,7 @@ const Note = require('./models/note');
 require('dotenv').config()
 
 app.use(express.json()); //Without this req.body for POST will be undefined.
+app.use(express.static('build'));
 
 const cors = require('cors');
 

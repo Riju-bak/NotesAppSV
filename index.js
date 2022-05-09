@@ -24,50 +24,86 @@ app.get('/', (req, res) => {
 app.get('/api/notes', (req, res) => {
     Note.find({}).then(notes => {
         res.send(notes)
-    })
+    });
 });
 
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res, next) => {
     const id = req.params.id
-    Note.find({_id: id}).then(
-        note => {
-            res.json(note);
-        }
-    )
-    if (note) {
-        res.json(note);
-    } else {
-        res.status(404).end(`Note with id ${id} doesn't exist`);
-    }
-})
-
-app.delete('/api/notes/:id', (req, res) => {
-    const id = Number(req.params.id);
-    if (notes.some(note => note.id === id)) {
-        notes = notes.filter(note => note.id !== id);
-        res.status(204).end();
-    } else {
-        res.status(404).end();
-    }
-})
-app.post('/api/notes', (req, res) => {
-    const body = req.body;
-    if (!body.content) {
-        return res.status(400).json({
-            error: 'content missing'
+    Note.findById(id)
+        .then(note => {
+            if(note){
+              res.json(note);
+            }
+            else{
+                res.status(404).end();
+            }
+        })
+        .catch(err => {
+            next(err);
         });
-    }
+});
 
-    const note = {
-        id: generateID(),
-        content: body.content,
-        date: new Date(),
-        important: body.important || false
-    }
-
-    notes = notes.concat(note);
-    res.json(note);
+app.delete('/api/notes/:id', (req, res, next) => {
+    const id = req.params.id;
+    Note.findByIdAndDelete(id)
+        .then(result => {
+            res.status(204).end();
+        })
+        .catch(err => {
+            next(err)
+        });
 })
+
+app.post('/api/notes', (req, res, next) => {
+    const body = req.body;
+
+    const note = new Note({
+            content: body.content,
+            date: new Date(),
+            important: body.important || false
+        }
+    );
+    note.save()
+        .then(savedNote => {
+            console.log(`note saved`);
+            res.json(savedNote);
+        })
+        .catch(err => {
+            next(err);
+        });
+});
+
+app.put('/api/notes/:id', (req, res, next) => {
+    const id = req.params.id;
+    Note.findByIdAndUpdate(id, req.body, { new:true, runValidators: true, context: 'query' })
+        .then(note => {
+            if(note){
+                const updatedNote = note; //note itself is latest since we have set new:true in the configuration object passed to findByIDAndUpdate(), unlike the Phonebook server.
+                res.json(updatedNote);
+            }
+            else{
+                res.status(404).end();
+            }
+        })
+        .catch(err => next(err));
+})
+
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'Unknown endpoint'});
+};
+app.use(unknownEndpoint);
+
+const errorHandler = (err, req, res, next) => {
+    console.log(err.message);
+    if(err.name === "CastError"){
+        return res.status(400).send({error: 'malformatted id'});
+    }
+    else if(err.name === "ValidationError"){
+        return res.status(400).send({error: err.message});
+    }
+    next(err);
+};
+app.use(errorHandler);  //this has to be the last loaded middleware.
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

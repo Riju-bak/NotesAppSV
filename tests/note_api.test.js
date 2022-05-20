@@ -39,7 +39,7 @@ test('notes are returned as json', async () => {
 
 test('there are two notes', async () => {
     const response = await api.get('/api/notes');
-    expect(response.body).toHaveLength(2);
+    expect(response.body).toHaveLength(initialNotes.length);
 });
 
 test('first note is about HTML', async () => {
@@ -51,6 +51,22 @@ test('a specific note is within the returned notes', async () => {
     const response = await api.get('/api/notes');
     const contents = response.body.map(note => note.content);
     expect(contents).toContain('Browser can execute only Javascript');
+});
+
+test('a valid note can be added', async () => {
+    const newNote = {
+        content: 'async/await simplifies async calls',
+        important: true
+    };
+
+    await api.post('/api/notes')
+        .send(newNote)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/notes');
+    const contents = response.body.map(note => note.content);
+    expect(contents).toContain('async/await simplifies async calls');
 });
 
 afterAll(() => {

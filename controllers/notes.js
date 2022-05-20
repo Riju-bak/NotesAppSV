@@ -6,20 +6,19 @@ const logger = require("../utils/logger");
 //     res.send('<h1>Notes-App Server</h1>');
 // })
 
-notesRouter.get('/', (req, res) => {
-    Note.find({}).then(notes => {
-        res.send(notes)
-    });
+notesRouter.get('/', async (req, res) => {
+    const notes = await Note.find({});
+    res.send(notes);
 });
+
 
 notesRouter.get('/:id', (req, res, next) => {
     const id = req.params.id
     Note.findById(id)
         .then(note => {
-            if(note){
+            if (note) {
                 res.json(note);
-            }
-            else{
+            } else {
                 res.status(404).end();
             }
         })
@@ -60,13 +59,12 @@ notesRouter.post('/', (req, res, next) => {
 
 notesRouter.put('/:id', (req, res, next) => {
     const id = req.params.id;
-    Note.findByIdAndUpdate(id, req.body, { new:true, runValidators: true, context: 'query' })
+    Note.findByIdAndUpdate(id, req.body, {new: true, runValidators: true, context: 'query'})
         .then(note => {
-            if(note){
-                 //note itself is latest since we have set new:true in the configuration object passed to findByIDAndUpdate(), unlike the Phonebook server.
+            if (note) {
+                //note itself is latest since we have set new:true in the configuration object passed to findByIDAndUpdate(), unlike the Phonebook server.
                 res.json(note);
-            }
-            else{
+            } else {
                 res.status(404).end();
             }
         })

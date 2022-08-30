@@ -2,3 +2,6 @@ node_modules
 *.http
 .idea
 .env
+tests
+for_testing.js
+refresh_test_db.js

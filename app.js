@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 const notesRouter = require('./controllers/notes');
+const userRouter = require("./controllers/users");
 const logger = require('./utils/logger');
 const config = require('./utils/config');
 const express = require('express');
+require('express-async-errors');
 const app = express();
 const cors = require('cors');
 const middleware = require('./utils/middlewares');
+const loginRouter = require("./controllers/login");
 
 logger.info(`Connecting to MongoDB`);
 
@@ -20,7 +23,10 @@ app.use(express.static('build')); //whenever express gets an HTTP GET request it
 
 app.use(express.json()); //Without this req.body for POST will be undefined.
 
-app.use('/api/notes', notesRouter);
+app.use(config.notesAPIBaseUrl, notesRouter);
+app.use(config.userAPIBaseUrl, userRouter);
+
+app.use(config.loginBaseUrl, loginRouter);
 
 app.use(middleware.requestLogger);
 app.use(middleware.errorHandler);

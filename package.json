@@ -7,18 +7,22 @@
     "test": "NODE_ENV=test jest --verbose --runInBand --forceExit",
     "start": "NODE_ENV=production node index.js",
     "dev": "NODE_ENV=development nodemon index.js",
-    "build:ui": "rm -rf build/ && cd /home/rijubak/test_ground/full_stack_open2022_prac/part2_a && rm -rf build/ && npm run build && cp -r build/ /home/rijubak/test_ground/full_stack_open2022_prac/noteserver/",
+    "build:ui": "rm -rf build/ && cd /home/rijubak/test_ground/full_stack_open2022_prac/notes-client && rm -rf build/ && npm run build && cp -r build/ /home/rijubak/test_ground/full_stack_open2022_prac/noteserver/",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "refresh-test-db": "NODE_ENV=test node utils/refresh_test_db.js"
   },
   "keywords": [],
   "author": "Rijubak Karmakar",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.2"
   },
   "devDependencies": {
